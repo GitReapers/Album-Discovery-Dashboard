@@ -1,50 +1,62 @@
-import { mbSearchArtist, mbGetAllReleaseGroups, mbGetReleaseGroup } from "./api.js";
-export default function SearchResults({ items, sendAlbumInfo }) {
+import { mbSearchArtist, mbGetAllReleaseGroups } from "./api.js";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-    const handleLookup = async (item) => {
-        const artists = await mbSearchArtist(item.artistName); // fetch artists
-        const artistId = artists.artists[0].id; // get first artist's id
-        if (artistId) {
+export default function SearchResults({ items }) {
+    const navigate = useNavigate();
+
+    const handleClick = async (item) => {
+        
+            const artists = await mbSearchArtist(item.artistName); // fetch artists
+            const artistId = artists.artists[0].id; // get first artist's mbid
+
+            if (!artistId) {
+                alert("Failed to load artist information.");
+                return;
+            }
+
             const releaseGroups = await mbGetAllReleaseGroups(artistId); // get all releases from this artist
             // filter to get releases that match the album name that was clicked on
             const filteredReleaseGroups = releaseGroups["release-groups"].filter(releaseGroup => {
                 return releaseGroup.title === item.collectionName;
             });
-            // get the first album's id
+            
+            if (filteredReleaseGroups.length === 0) {
+                alert("Failed to load album information.");
+                return;
+            }
+            // get the first album's mbid
             const releaseGroupId = filteredReleaseGroups[0].id;
-            if (releaseGroupId) {
-                const releaseGroupInfo = await mbGetReleaseGroup(releaseGroupId); // get extra info about this album
-                
-                // send album info to App component
-                sendAlbumInfo(JSON.stringify(releaseGroupInfo));
-            }
-            else {
-                sendAlbumInfo(null);
-            }
-        }
-        else {
-            sendAlbumInfo(null);
-        }
+
+            // navigate to album page and send album mbid    
+            navigate(`/album/${releaseGroupId}`);
+
     }
 
-    if (items) {
-        return (
-            <table>
-                <th>Artist</th>
-                <th>Album</th>
-                <th>Genre</th>
-                {items.map(item => (
-                    <tr onClick={() => handleLookup(item)} key={item.id}>
-                        <td>{item.artistName}</td>
-                        <td>{item.collectionName}</td>
-                        <td>{item.primaryGenreName}</td>
-                    </tr>
-                ))}
-            </table>
-        );
+    if (!items || items.length === 0) {
+        return null;
     }
     else {
-        return (<></>)
+        return (
+            <table>
+                <thead>
+                    <tr>
+                        <th>Artist</th>
+                        <th>Album</th>
+                        <th>Genre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map(item => (
+                        <tr onClick={() => handleClick(item)} key={item.collectionId}>
+                            <td>{item.artistName}</td>
+                            <td>{item.collectionName}</td>
+                            <td>{item.primaryGenreName}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
     }
 
 }

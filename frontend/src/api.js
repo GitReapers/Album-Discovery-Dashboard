@@ -42,9 +42,9 @@ export async function lastfmGetTopTracks() {
 }
 
 // itunes
-export async function itunesSearchAlbums(query) {
+export async function itunesSearchArtists(query) {
   try {
-    const url = `${ITUNES_URL}/search?term=${encodeURIComponent(query)}&media=music&entity=album&limit=20`;
+    const url = `${ITUNES_URL}/search?term=${encodeURIComponent(query)}&media=music&entity=musicArtist&limit=10`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`iTunes error: ${res.status}`);
     return res.json();
@@ -52,7 +52,18 @@ export async function itunesSearchAlbums(query) {
   catch (err) {
     console.error('iTunes API error:', err.message);
   }
+}
 
+export async function itunesLookupAlbums(artistId) {
+  try {
+    const url = `${ITUNES_URL}/lookup?id=${artistId}&entity=album`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`iTunes error: ${res.status}`);
+    return res.json();
+  }
+  catch (err) {
+    console.error('iTunes API error:', err.message);
+  }
 }
 
 export async function itunesSearchTracks(query) {

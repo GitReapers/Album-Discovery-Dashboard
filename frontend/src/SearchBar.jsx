@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { itunesSearchAlbums } from "./api.js";
+import { itunesSearchArtists, itunesLookupAlbums } from "./api.js";
 
 export default function SearchBar({ sendResults }) {
   const [query, setQuery] = useState(null);
 
   const handleSearch = async () => {
-    const itunes = await itunesSearchAlbums(query);
+    const artists = await itunesSearchArtists(query);
+
+    if (!artists) {
+      return;
+    }
+    const artistId = artists.results[0].artistId;
+    const albumsData = await itunesLookupAlbums(artistId);
+    const [artist, ...albums] = albumsData.results; // first element is the artist, get rid of that
   
     // send results to App component
-    sendResults(JSON.stringify(itunes.results));
+    sendResults(JSON.stringify(albums));
   }
 
   return (
