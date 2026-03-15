@@ -1,2 +1,2 @@
 # Album-Discovery-Dashboard
-MI449 Final group project -- Album discovery dashboard
+MI449 Group Project — Album Discovery Dashboard
