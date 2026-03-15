@@ -41,36 +41,40 @@ export async function lastfmGetTopTracks() {
   }
 }
 
+const ITUNES_PROXY = "/api/itunes";
+
 // itunes
 export async function itunesSearchArtists(query) {
   try {
-    const url = `${ITUNES_URL}/search?term=${encodeURIComponent(query)}&media=music&entity=musicArtist&limit=10`;
+    const url = `${ITUNES_PROXY}?path=/search?term=${encodeURIComponent(query)}%26media=music%26entity=musicArtist%26limit=10`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`iTunes error: ${res.status}`);
     return res.json();
-  }
-  catch (err) {
+  } catch (err) {
     console.error('iTunes API error:', err.message);
   }
 }
 
 export async function itunesLookupAlbums(artistId) {
   try {
-    const url = `${ITUNES_URL}/lookup?id=${artistId}&entity=album`;
+    const url = `${ITUNES_PROXY}?path=/lookup?id=${artistId}%26entity=album`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`iTunes error: ${res.status}`);
     return res.json();
-  }
-  catch (err) {
+  } catch (err) {
     console.error('iTunes API error:', err.message);
   }
 }
 
 export async function itunesSearchTracks(query) {
-  const url = `${ITUNES_URL}/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=20`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`iTunes error: ${res.status}`);
-  return res.json();
+  try {
+    const url = `${ITUNES_PROXY}?path=/search?term=${encodeURIComponent(query)}%26media=music%26entity=song%26limit=20`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`iTunes error: ${res.status}`);
+    return res.json();
+  } catch (err) {
+    console.error('iTunes API error:', err.message);
+  }
 }
 
 // musicbrainz
