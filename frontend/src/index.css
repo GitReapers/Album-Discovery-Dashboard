@@ -530,7 +530,7 @@ button {
 }
 
 /* ============================================
-   Album Lower Sections (Tracklist + Similar)
+   Album Lower Sections (Similar Artists)
    ============================================ */
 .album-lower {
   display: flex;
@@ -549,52 +549,6 @@ button {
   border-bottom: 1px solid var(--border-subtle);
 }
 
-/* Tracklist */
-.tracklist {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.track-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  transition: background-color var(--transition);
-}
-
-.track-item:hover {
-  background-color: var(--bg-elevated);
-}
-
-.track-number {
-  font-size: 13px;
-  color: var(--text-muted);
-  width: 20px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.track-title {
-  flex: 1;
-  font-size: 14px;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.track-duration {
-  font-size: 13px;
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-/* Similar Artists */
 .similar-grid {
   display: flex;
   flex-wrap: wrap;
