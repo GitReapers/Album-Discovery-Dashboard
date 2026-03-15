@@ -100,6 +100,38 @@ export async function mbGetAllReleaseGroups(artistId) {
   }
 }
 
+// get tracklist: fetch first release for a release group, then its recordings
+export async function mbGetTracklist(releaseGroupId) {
+  try {
+    const releasesUrl = `${MB_URL}/release?release-group=${releaseGroupId}&limit=1&fmt=json`;
+    const releasesRes = await fetch(releasesUrl, { headers: MB_HEADERS });
+    if (!releasesRes.ok) throw new Error(`MusicBrainz error: ${releasesRes.status}`);
+    const releasesData = await releasesRes.json();
+
+    if (!releasesData.releases?.length) return null;
+
+    const releaseId = releasesData.releases[0].id;
+    const recordingsUrl = `${MB_URL}/release/${releaseId}?inc=recordings&fmt=json`;
+    const recordingsRes = await fetch(recordingsUrl, { headers: MB_HEADERS });
+    if (!recordingsRes.ok) throw new Error(`MusicBrainz error: ${recordingsRes.status}`);
+    return recordingsRes.json();
+  } catch (err) {
+    console.error("MusicBrainz API error:", err.message);
+  }
+}
+
+// last.fm similar artists
+export async function lastfmGetSimilarArtists(artist) {
+  try {
+    const url = `${LASTFM_URL}?method=artist.getSimilar&artist=${encodeURIComponent(artist)}&api_key=${LASTFM_KEY}&format=json&limit=8`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Last.fm error: ${res.status}`);
+    return res.json();
+  } catch (err) {
+    console.error("Last.fm API error:", err.message);
+  }
+}
+
 // use release group's MBID to get specific album info
 export async function mbGetReleaseGroup(releaseGroupId) {
   try {
