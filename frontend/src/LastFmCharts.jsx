@@ -1,103 +1,72 @@
+function formatNum(n) {
+  const num = parseInt(n);
+  if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
+  if (num >= 1_000) return Math.round(num / 1_000) + "K";
+  return num.toString();
+}
+
+function ArtistsChart({ artists }) {
+  return (
+    <div className="chart-card">
+      <div className="chart-title">Top Artists</div>
+      <ul className="chart-list">
+        {artists.map((artist, i) => (
+          <li key={i} className="chart-item">
+            <span className={`chart-rank${i < 3 ? " top-three" : ""}`}>
+              {i + 1}
+            </span>
+            <div className="chart-item-info">
+              <div className="chart-item-name">{artist.name}</div>
+              <div className="chart-item-sub">
+                {formatNum(artist.listeners)} listeners
+              </div>
+            </div>
+            <span className="chart-item-stat">
+              {formatNum(artist.playcount)} plays
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function TracksChart({ tracks }) {
+  return (
+    <div className="chart-card">
+      <div className="chart-title">Top Tracks</div>
+      <ul className="chart-list">
+        {tracks.map((track, i) => (
+          <li key={i} className="chart-item">
+            <span className={`chart-rank${i < 3 ? " top-three" : ""}`}>
+              {i + 1}
+            </span>
+            <div className="chart-item-info">
+              <div className="chart-item-name">{track.name}</div>
+              <div className="chart-item-sub">{track.artist.name}</div>
+            </div>
+            <span className="chart-item-stat">
+              {formatNum(track.playcount)} plays
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function LastFmCharts({ artists, tracks }) {
-    if (artists && tracks) {
-        return (
-            <div>
-                <table>
-                    <caption>Top 30 Artists Chart</caption>
-                    <thead>
-                        <tr>
-                            <th>Artist</th>
-                            <th>Playcount</th>
-                            <th>Listeners</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {artists.map((artist, index) => (
-                            <tr key={index}>
-                                <td>{artist.name}</td>
-                                <td>{artist.playcount}</td>
-                                <td>{artist.listeners}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+  if (!artists && !tracks) return null;
 
-                <table>
-                    <caption>Top 30 Tracks Chart</caption>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Artist</th>
-                            <th>Playcount</th>
-                            <th>Listeners</th>
-                        </tr></thead>
-                    <tbody>
-                        {tracks.map((track, index) => (
-                            <tr key={index}>
-                                <td>{track.name}</td>
-                                <td>{track.artist.name}</td>
-                                <td>{track.playcount}</td>
-                                <td>{track.listeners}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
-    else if (artists && !tracks) {
-
-        return (
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <caption>Top 30 Artists Chart</caption>
-                            <th>Artist</th>
-                            <th>Playcount</th>
-                            <th>Listeners</th>
-                            <tbody>
-                                {artists.map((artist, index) => (
-                                    <tr key={index}>
-                                        <td>{artist.name}</td>
-                                        <td>{artist.playcount}</td>
-                                        <td>{artist.listeners}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        );
-    }
-    else if (tracks && !artists) {
-        return (
-            <div>
-                <table>
-                    <caption>Top 30 Tracks Chart</caption>
-                    <thead>
-
-                        <tr>
-                            <th>Name</th>
-                            <th>Playcount</th>
-                            <th>Listeners</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tracks.map((track, index) => (
-                            <tr key={index}>
-                                <td>{track.name}</td>
-                                <td>{track.playcount}</td>
-                                <td>{track.listeners}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
-    else {
-        return (<div></div>)
-    }
+  return (
+    <div className="charts-section">
+      <div className="section-header">
+        <h2>Trending Now</h2>
+      </div>
+      <div className="charts-grid">
+        {artists && <ArtistsChart artists={artists} />}
+        {tracks && <TracksChart tracks={tracks} />}
+      </div>
+    </div>
+  );
 }
